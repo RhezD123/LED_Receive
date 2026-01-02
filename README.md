@@ -1,0 +1,1 @@
+This project will act as an optical receiver. An external LED will blink some message in binary and this receiver will receive it. (This is still in progress but I have copied some of the files into the project)
