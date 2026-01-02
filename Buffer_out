@@ -1,0 +1,46 @@
+// Design source
+
+`timescale 1ns / 1ps
+
+module buffer_out(
+    input wire clk,
+    input wire rst,
+    input full,
+    input empty,
+    input wire [7:0] buffer_byte, //comes as a 8 bit reg
+    output reg r_en,
+    output reg [1:0] toconsole
+    );
+
+    reg [7:0] byteinn;
+    reg [7:0] ptr2;
+    
+    buffer_2 inst(
+        .clk(clk),
+        .rst(rst),
+        .bitOut(buffer_byte),
+        .r_en(r_en),
+        .empty(empty),
+        .full(full)
+    );
+    
+    always @(posedge clk) begin
+        if(!empty) begin
+            r_en <= 1'b1;
+            byteinn <= buffer_byte;
+            toconsole <= byteinn[ptr2];
+            ptr2 <= ptr2 + 1;
+        end else begin
+            r_en <= 0;
+            end
+            
+    end
+        
+        
+        
+        
+        
+        
+        
+endmodule
+
