@@ -1,0 +1,59 @@
+// Design Source
+
+`timescale 1ns / 1ps
+
+//Depth = (Writing Rate - Reading Rate)/Clock Frequency         
+module buffer_2(
+    input wire [7:0] byteIn, //newest bit in, holder from receiver, coonected to holder
+    input wire rst, //Rst
+    input wire clk, //clk
+    input wire w_en, //comes from receiver
+    input wire r_en, //comes from controller module
+    output reg [7:0] bitOut, //bit out of buffer
+    output empty,
+    output full  
+    ); 
+    
+    reg[7:0] w_ptr; 
+    reg [7:0] r_ptr;   
+    reg [7:0] storage[0:7];
+    
+    reg [7:0] current_data;
+    always @(posedge clk) begin
+   
+        if (!rst) begin
+            w_ptr <= 0;
+        end else begin
+            if (w_en && !full) begin //not full and write enable, write the byte to storage
+                storage[w_ptr] <= byteIn;
+                w_ptr <= w_ptr + 1;       //increment 
+            end                     
+        end
+    end
+        
+   always @(posedge clk) begin
+   
+        if (!rst) begin
+            r_ptr <= 0;
+        end else begin
+            if(r_en && !empty) begin           //same as write but is read. r_en signal coming from top
+                
+                bitOut <= storage[r_ptr];
+                r_ptr <= r_ptr + 1;
+            end
+        end
+   end     
+    
+   assign full  = (w_ptr + 1) == r_ptr;
+   assign empty = w_ptr == r_ptr;
+    
+
+endmodule
+
+    
+
+
+
+
+
+  
